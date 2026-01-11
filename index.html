@@ -1,247 +1,270 @@
-import React, { useState, useEffect } from 'react';
-import { Copy, Sparkles, Image as ImageIcon, Layout, Palette, Camera, Monitor, Smartphone, Check } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Studio - Generador Profesional</title>
+    <!-- Tailwind CSS para el diseño -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React y Babel para ejecutar JSX en el navegador -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+    <div id="root"></div>
 
-const App = () => {
-  const [subject, setSubject] = useState('');
-  const [action, setAction] = useState('');
-  const [style, setStyle] = useState('Realistic');
-  const [lighting, setLighting] = useState('Natural Light');
-  const [platform, setPlatform] = useState('Instagram Post');
-  const [generatedPrompt, setGeneratedPrompt] = useState('');
-  const [copied, setCopied] = useState(false);
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-  // Formatos basados en estándares de redes sociales 2025
-  const platforms = [
-    { name: 'Instagram Story / Reel', size: '9:16', desc: '1080 x 1920 px' },
-    { name: 'Instagram Post', size: '1:1', desc: '1080 x 1080 px' },
-    { name: 'Instagram Portrait / Carrusel', size: '4:5', desc: '1080 x 1350 px' },
-    { name: 'YouTube Thumbnail', size: '16:9', desc: '1280 x 720 px' },
-    { name: 'Facebook / LinkedIn Cover', size: '16:9', desc: 'Optimizada para banner' },
-    { name: 'Twitter (X) Post', size: '1.91:1', desc: '1200 x 628 px' },
-    { name: 'Profile Picture', size: '1:1', desc: 'Círculo perfecto' },
-  ];
+        // Mapeo de iconos de Lucide para React (manual simple para la versión HTML)
+        const Icon = ({ name, size = 16, className = "" }) => {
+            useEffect(() => {
+                lucide.createIcons();
+            }, [name]);
+            return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
+        };
 
-  const styles = [
-    'Realistic / Hyperrealistic', 'Cinematic', 'Minimalist', 'Cyberpunk', 
-    '3D Render (Octane)', 'Oil Painting', 'Digital Art', 'Anime/Manga',
-    'Vaporwave', 'Studio Photography', 'Isometric', 'Pop Art'
-  ];
+        const App = () => {
+            const [subject, setSubject] = useState('');
+            const [action, setAction] = useState('');
+            const [style, setStyle] = useState('Realistic');
+            const [lighting, setLighting] = useState('Natural Light');
+            const [platform, setPlatform] = useState('Instagram Post');
+            const [generatedPrompt, setGeneratedPrompt] = useState('');
+            const [copied, setCopied] = useState(false);
 
-  const lightings = [
-    'Natural Sunlight', 'Golden Hour', 'Neon Lighting', 'Studio Softbox', 
-    'Dramatic Chiaroscuro', 'Volumetric Fog', 'High Key', 'Moonlight'
-  ];
+            const platforms = [
+                { name: 'Instagram Story / Reel', size: '9:16', desc: '1080 x 1920 px', icon: 'smartphone' },
+                { name: 'Instagram Post', size: '1:1', desc: '1080 x 1080 px', icon: 'square' },
+                { name: 'Instagram Portrait / Carrusel', size: '4:5', desc: '1080 x 1350 px', icon: 'layout' },
+                { name: 'YouTube Thumbnail', size: '16:9', desc: '1280 x 720 px', icon: 'monitor' },
+                { name: 'Facebook / LinkedIn Cover', size: '16:9', desc: 'Optimizada para banner', icon: 'image' },
+                { name: 'Twitter (X) Post', size: '1.91:1', desc: '1200 x 628 px', icon: 'hash' },
+                { name: 'Profile Picture', size: '1:1', desc: 'Círculo perfecto', icon: 'user' },
+            ];
 
-  // Lógica de construcción basada en los documentos de arquitectura de prompts
-  useEffect(() => {
-    if (!subject) {
-      setGeneratedPrompt('');
-      return;
-    }
+            const styles = [
+                'Realistic / Hyperrealistic', 'Cinematic', 'Minimalist', 'Cyberpunk', 
+                '3D Render (Octane)', 'Oil Painting', 'Digital Art', 'Anime/Manga',
+                'Vaporwave', 'Studio Photography', 'Isometric', 'Pop Art'
+            ];
 
-    const currentPlatform = platforms.find(p => p.name === platform);
-    
-    // Estructura: [Estilo] + [Sujeto] + [Acción] + [Iluminación] + [Parámetros Técnicos]
-    let prompt = `A ${style.toLowerCase()} image of ${subject}`;
-    if (action) prompt += ` ${action}`;
-    prompt += `, featuring ${lighting.toLowerCase()}`;
-    prompt += `. High resolution, highly detailed, professional composition. Aspect ratio ${currentPlatform.size}. --v 6.0`;
+            const lightings = [
+                'Natural Sunlight', 'Golden Hour', 'Neon Lighting', 'Studio Softbox', 
+                'Dramatic Chiaroscuro', 'Volumetric Fog', 'High Key', 'Moonlight'
+            ];
 
-    setGeneratedPrompt(prompt);
-  }, [subject, action, style, lighting, platform]);
+            useEffect(() => {
+                if (!subject) {
+                    setGeneratedPrompt('');
+                    return;
+                }
+                const currentPlatform = platforms.find(p => p.name === platform);
+                let prompt = `A ${style.toLowerCase()} image of ${subject}`;
+                if (action) prompt += ` ${action}`;
+                prompt += `, featuring ${lighting.toLowerCase()}`;
+                prompt += `. High resolution, highly detailed, professional composition. Aspect ratio ${currentPlatform.size}. --v 6.0`;
+                setGeneratedPrompt(prompt);
+            }, [subject, action, style, lighting, platform]);
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedPrompt);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+            const copyToClipboard = () => {
+                // document.execCommand para compatibilidad en iframes
+                const el = document.createElement('textarea');
+                el.value = generatedPrompt;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            };
 
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 font-sans">
-      <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <header className="flex items-center gap-3 mb-10">
-          <div className="bg-gradient-to-br from-purple-500 to-blue-600 p-3 rounded-2xl shadow-lg shadow-purple-500/20">
-            <Sparkles size={32} className="text-white" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">AI Prompt Studio</h1>
-            <p className="text-slate-400 text-sm">Generador optimizado basado en ingeniería de prompts avanzada</p>
-          </div>
-        </header>
+            return (
+                <div className="min-h-screen p-4 md:p-8">
+                    <div className="max-w-5xl mx-auto">
+                        <header className="flex items-center gap-3 mb-10">
+                            <div className="bg-gradient-to-br from-purple-500 to-blue-600 p-3 rounded-2xl shadow-lg shadow-purple-500/20 text-white">
+                                <Icon name="sparkles" size={32} />
+                            </div>
+                            <div>
+                                <h1 className="text-3xl font-bold tracking-tight">AI Prompt Studio</h1>
+                                <p className="text-slate-400 text-sm">Generador optimizado basado en ingeniería de prompts avanzada</p>
+                            </div>
+                        </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Controles */}
-          <section className="space-y-6 bg-slate-900/50 p-6 rounded-3xl border border-slate-800 backdrop-blur-sm">
-            
-            {/* Sujeto */}
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
-                <ImageIcon size={16} className="text-purple-400" /> Sujeto Principal
-              </label>
-              <textarea 
-                placeholder="Ej: Un astronauta montando un caballo en Marte..."
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-200 focus:ring-2 focus:ring-purple-500 outline-none transition-all resize-none h-24"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-              />
-            </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            {/* Panel de Controles */}
+                            <section className="space-y-6 bg-slate-900/50 p-6 rounded-3xl border border-slate-800 backdrop-blur-sm">
+                                <div className="space-y-2">
+                                    <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
+                                        <Icon name="image" size={16} className="text-purple-400" /> Sujeto Principal
+                                    </label>
+                                    <textarea 
+                                        placeholder="Ej: Un astronauta montando un caballo en Marte..."
+                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-200 focus:ring-2 focus:ring-purple-500 outline-none transition-all resize-none h-24"
+                                        value={subject}
+                                        onChange={(e) => setSubject(e.target.value)}
+                                    />
+                                </div>
 
-            {/* Acción/Detalle */}
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
-                <Sparkles size={16} className="text-blue-400" /> Acción o Detalles Extra
-              </label>
-              <input 
-                type="text"
-                placeholder="Ej: vistiendo una armadura futurista de neón"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                value={action}
-                onChange={(e) => setAction(e.target.value)}
-              />
-            </div>
+                                <div className="space-y-2">
+                                    <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
+                                        <Icon name="sparkles" size={16} className="text-blue-400" /> Detalles Extra
+                                    </label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Ej: vistiendo una armadura futurista"
+                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                        value={action}
+                                        onChange={(e) => setAction(e.target.value)}
+                                    />
+                                </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {/* Estilo */}
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
-                  <Palette size={16} className="text-pink-400" /> Estilo Visual
-                </label>
-                <select 
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:ring-2 focus:ring-pink-500 appearance-none"
-                  value={style}
-                  onChange={(e) => setStyle(e.target.value)}
-                >
-                  {styles.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
+                                            <Icon name="palette" size={16} className="text-pink-400" /> Estilo
+                                        </label>
+                                        <select 
+                                            className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:ring-2 focus:ring-pink-500 appearance-none"
+                                            value={style}
+                                            onChange={(e) => setStyle(e.target.value)}
+                                        >
+                                            {styles.map(s => <option key={s} value={s}>{s}</option>)}
+                                        </select>
+                                    </div>
 
-              {/* Iluminación */}
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
-                  <Camera size={16} className="text-orange-400" /> Iluminación
-                </label>
-                <select 
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:ring-2 focus:ring-orange-500 appearance-none"
-                  value={lighting}
-                  onChange={(e) => setLighting(e.target.value)}
-                >
-                  {lightings.map(l => <option key={l} value={l}>{l}</option>)}
-                </select>
-              </div>
-            </div>
+                                    <div className="space-y-2">
+                                        <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
+                                            <Icon name="camera" size={16} className="text-orange-400" /> Luz
+                                        </label>
+                                        <select 
+                                            className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:ring-2 focus:ring-orange-500 appearance-none"
+                                            value={lighting}
+                                            onChange={(e) => setLighting(e.target.value)}
+                                        >
+                                            {lightings.map(l => <option key={l} value={l}>{l}</option>)}
+                                        </select>
+                                    </div>
+                                </div>
 
-            {/* Plataforma / Formato */}
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
-                <Layout size={16} className="text-emerald-400" /> Formato de Redes Sociales
-              </label>
-              <div className="grid grid-cols-1 gap-2">
-                {platforms.map((p) => (
-                  <button
-                    key={p.name}
-                    onClick={() => setPlatform(p.name)}
-                    className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
-                      platform === p.name 
-                      ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400' 
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      {p.size === '9:16' ? <Smartphone size={18} /> : <Monitor size={18} />}
-                      <div className="text-left">
-                        <div className="text-sm font-semibold">{p.name}</div>
-                        <div className="text-[10px] opacity-60">{p.desc}</div>
-                      </div>
+                                <div className="space-y-2">
+                                    <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
+                                        <Icon name="layout" size={16} className="text-emerald-400" /> Formato Social
+                                    </label>
+                                    <div className="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                                        {platforms.map((p) => (
+                                            <button
+                                                key={p.name}
+                                                onClick={() => setPlatform(p.name)}
+                                                className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
+                                                    platform === p.name 
+                                                    ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400' 
+                                                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <Icon name={p.icon} size={18} />
+                                                    <div className="text-left">
+                                                        <div className="text-sm font-semibold">{p.name}</div>
+                                                        <div className="text-[10px] opacity-60">{p.desc}</div>
+                                                    </div>
+                                                </div>
+                                                <span className="text-xs font-mono bg-slate-900 px-2 py-1 rounded">{p.size}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* Resultado */}
+                            <section className="flex flex-col gap-6">
+                                <div className="flex-1 bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-8 flex flex-col relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl -ml-20 -mb-20"></div>
+
+                                    <div className="relative z-10 flex flex-col h-full">
+                                        <div className="flex items-center justify-between mb-6">
+                                            <h2 className="text-xl font-bold flex items-center gap-2">
+                                                <Icon name="sparkles" size={20} className="text-yellow-400" />
+                                                Prompt Generado
+                                            </h2>
+                                            <button 
+                                                onClick={copyToClipboard}
+                                                className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all ${
+                                                    copied 
+                                                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
+                                                    : 'bg-white text-slate-900 hover:bg-slate-200 shadow-lg shadow-white/10'
+                                                }`}
+                                            >
+                                                {copied ? <><Icon name="check" size={18} /> Copiado</> : <><Icon name="copy" size={18} /> Copiar</>}
+                                            </button>
+                                        </div>
+
+                                        <div className="flex-1 flex items-center justify-center">
+                                            {!generatedPrompt ? (
+                                                <div className="text-center space-y-4 opacity-30">
+                                                    <div className="bg-slate-800 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                        <Icon name="image" size={40} />
+                                                    </div>
+                                                    <p className="text-lg italic">Escribe tu idea para empezar...</p>
+                                                </div>
+                                            ) : (
+                                                <div className="w-full">
+                                                    <div className="p-6 bg-slate-950/80 border border-slate-800 rounded-2xl shadow-inner font-mono text-lg leading-relaxed text-purple-200 break-words">
+                                                        {generatedPrompt}
+                                                    </div>
+                                                    <div className="mt-8 grid grid-cols-2 gap-4">
+                                                        <div className="bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50">
+                                                            <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1">Estructura</p>
+                                                            <p className="text-xs text-slate-300">Arquitectura Avanzada</p>
+                                                        </div>
+                                                        <div className="bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50">
+                                                            <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1">Calidad</p>
+                                                            <p className="text-xs text-slate-300">V6.0 Optimizado</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {generatedPrompt && (
+                                            <div className="mt-auto pt-6 flex justify-center">
+                                                <div className="bg-slate-800/30 p-2 rounded-lg border border-slate-700 flex items-center gap-3">
+                                                    <div className="border-2 border-slate-500 rounded bg-slate-700/50" 
+                                                         style={{ 
+                                                           width: platform.includes('Story') ? '20px' : platform.includes('Post') ? '35px' : '50px', 
+                                                           height: platform.includes('Story') ? '35px' : platform.includes('Post') ? '35px' : '30px'
+                                                         }}>
+                                                    </div>
+                                                    <span className="text-xs text-slate-400 font-medium">{platform}</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="bg-purple-900/20 border border-purple-500/30 p-4 rounded-2xl">
+                                    <p className="text-xs text-purple-300">
+                                        <span className="font-bold">💡 Tip de los Docs:</span> Los modelos modernos prefieren frases fluidas. Este prompt combina estilo y formato automáticamente.
+                                    </p>
+                                </div>
+                            </section>
+                        </div>
                     </div>
-                    <span className="text-xs font-mono bg-slate-900 px-2 py-1 rounded">{p.size}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Resultado Visual */}
-          <section className="flex flex-col gap-6">
-            <div className="flex-1 bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-8 flex flex-col relative overflow-hidden group">
-              {/* Decoración de fondo */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl -ml-20 -mb-20"></div>
-
-              <div className="relative z-10 flex flex-col h-full">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <Sparkles className="text-yellow-400" size={20} />
-                    Prompt Generado
-                  </h2>
-                  <button 
-                    onClick={copyToClipboard}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all ${
-                      copied 
-                      ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
-                      : 'bg-white text-slate-900 hover:bg-slate-200 shadow-lg shadow-white/10'
-                    }`}
-                  >
-                    {copied ? <><Check size={18} /> Copiado</> : <><Copy size={18} /> Copiar</>}
-                  </button>
                 </div>
+            );
+        };
 
-                <div className="flex-1 flex items-center justify-center">
-                  {!generatedPrompt ? (
-                    <div className="text-center space-y-4 opacity-30">
-                      <div className="bg-slate-800 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <ImageIcon size={40} />
-                      </div>
-                      <p className="text-lg italic">Describe tu idea para empezar...</p>
-                    </div>
-                  ) : (
-                    <div className="w-full">
-                      <div className="p-6 bg-slate-950/80 border border-slate-800 rounded-2xl shadow-inner font-mono text-lg leading-relaxed text-purple-200">
-                        {generatedPrompt}
-                      </div>
-                      
-                      <div className="mt-8 grid grid-cols-2 gap-4">
-                        <div className="bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50">
-                          <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1">Estructura</p>
-                          <p className="text-xs text-slate-300">Arquitectura de Roles & Estilo</p>
-                        </div>
-                        <div className="bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50">
-                          <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1">Optimización</p>
-                          <p className="text-xs text-slate-300">Filtros de Calidad Profesional</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Vista previa miniatura del formato */}
-                {generatedPrompt && (
-                  <div className="mt-auto pt-6 flex justify-center">
-                    <div className="bg-slate-800/30 p-2 rounded-lg border border-slate-700 flex items-center gap-3">
-                        <div className={`border-2 border-slate-500 rounded bg-slate-700/50 transition-all`} 
-                             style={{ 
-                               width: platform.includes('Story') ? '25px' : platform.includes('Post') ? '40px' : '60px', 
-                               height: platform.includes('Story') ? '45px' : platform.includes('Post') ? '40px' : '34px'
-                             }}>
-                        </div>
-                        <span className="text-xs text-slate-400 font-medium">{platform} ({platforms.find(p => p.name === platform).size})</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            {/* Tip de ingeniería de prompts */}
-            <div className="bg-purple-900/20 border border-purple-500/30 p-4 rounded-2xl">
-              <p className="text-xs text-purple-300">
-                <span className="font-bold">💡 Tip de los Docs:</span> Para modelos como Gemini o Midjourney v6, es mejor ser descriptivo que usar palabras clave sueltas. Esta herramienta une tus ideas en una narrativa lógica.
-              </p>
-            </div>
-          </section>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default App;
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
